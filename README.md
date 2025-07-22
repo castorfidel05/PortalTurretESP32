@@ -48,6 +48,35 @@ GND (fil marron/noir) → GND commun
 ```
 
 ### Recommandations
+
+## 📁 Structure du Code
+
+Le code a été partitionné en modules pour une meilleure maintenance :
+
+```
+PortalTurretESP32/
+├── PortalTurretESP32.ino      # Fichier principal (setup, loop)
+├── config.h                   # Configuration et constantes
+├── hardware/
+│   ├── leds.h                 # Déclarations pour les LEDs
+│   ├── leds.cpp               # Implémentation des fonctions LED
+│   ├── servo.h                # Déclarations pour le servo
+│   ├── servo.cpp              # Implémentation des fonctions servo
+│   ├── dfplayer.h             # Déclarations pour le DFPlayer
+│   └── dfplayer.cpp           # Implémentation des fonctions audio
+└── behaviors/
+    ├── behaviors.h            # Déclarations des comportements
+    └── behaviors.cpp          # Implémentation des comportements
+```
+
+### Modules
+
+- **config.h** : Contient toutes les constantes et définitions
+- **hardware/** : Contient les modules pour chaque composant matériel
+  - **leds** : Gestion des LEDs NeoPixel et effets visuels
+  - **servo** : Contrôle du servo moteur pour l'ouverture/fermeture
+  - **dfplayer** : Gestion de l'audio via le DFPlayer Mini
+- **behaviors/** : Contient la logique des différents comportements de la tourelle
 1. **Alimentation** : Utilisez une source 5V/1A minimum avec condensateurs de découplage
 2. **Protection** : Ajoutez une résistance de 330-500 ohms sur la ligne de données des NeoPixels
 3. **Haut-parleur** : 8 ohms, 3W minimum pour une bonne qualité sonore
@@ -99,3 +128,51 @@ GND (fil marron/noir) → GND commun
 
 # Music
 0200 = Still alive
+
+
+✅ Système de Comportements Émotionnels Implémenté
+1. 5 États Émotionnels Principaux ✅
+NEUTRE : Calme, observateur
+AMICAL : Accueillant, bienveillant
+VIGILANT : Alerte, méfiant
+HOSTILE : Agressif, défensif
+LUDIQUE : Joueur, espiègle
+2. Système d'Humeur Évolutif ✅
+humeurActuelle (0-100) : de très hostile à très amical
+niveauEnergie (0-100) : de fatigué à énergique
+niveauVigilance (0-100) : de détendu à hypervigilant
+Évolution automatique avec le temps vers la neutralité
+3. Variations Aléatoires ✅
+Chaque état a 3-4 variations différentes qui sont choisies aléatoirement :
+
+Neutre : Observation calme, mouvement léger, pulsation douce
+Amical : Accueil chaleureux, mouvement amical, effet lumineux doux
+Vigilant : Balayage vigilant, alerte modérée, surveillance
+Hostile : Menace directe, tir simulé, colère contenue
+Ludique : Arc-en-ciel, clin d'œil espiègle, show lumineux (+ easter egg)
+4. Transitions Fluides ✅
+La fonction 
+determinerEtatEmotionnel()
+ analyse l'humeur et les niveaux pour choisir l'état approprié
+transitionVersEtat()
+ gère le passage d'un état à l'autre de manière fluide
+Les états évoluent naturellement selon les conditions
+5. Interruptions Occasionnelles ✅
+5% de chance d'interruption à chaque cycle (simule la détection)
+reagirInterruption()
+ déclenche une réaction immédiate
+Ajuste automatiquement l'humeur et la vigilance après une interruption
+Avantages du Nouveau Système
+Plus Humain : Les comportements varient selon l'état émotionnel et évoluent avec le temps
+Moins Prévisible : Variations aléatoires et interruptions occasionnelles
+Réactif : Réagit aux "événements" et ajuste son comportement
+Évolutif : L'humeur change progressivement, créant une personnalité dynamique
+Modulaire : Facile d'ajouter de nouveaux états ou de modifier les existants
+Utilisation
+Le système peut être utilisé de deux façons :
+
+jouerComportementEmotionnel()
+c:\Users\pierr\Documents\Projects\PortalTurretESP32\behaviors\behaviors.h
+ : Nouveau système émotionnel
+jouerComportement(mode)
+ : Compatibilité avec l'ancien système (redirige vers le nouveau)
