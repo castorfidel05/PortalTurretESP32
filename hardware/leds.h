@@ -19,6 +19,14 @@ void barrelWave(uint32_t color, int cycles = 1, int delayMs = 50);
 void eyePulse(uint32_t color, int cycles = 3, int maxBrightness = 255, int stepDelay = 20);
 void rainbowEye(int cycles = 1, int delayMs = 20);
 
+// Nouvelles fonctions pour respiration et effets vocaux
+uint32_t getCouleurEtat();
+void breathingEffect();
+void voiceLedEffect(uint32_t couleur, int dureeMs, int etatEmotionnel);
+
+// Pattern joueur avancé
+void rainbowDance();
+
 // Variable externe pour accéder aux LEDs
 #ifndef MAIN_INO
 extern Adafruit_NeoPixel leds;

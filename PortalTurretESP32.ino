@@ -24,30 +24,20 @@ int niveauEnergie = 80;         // 0-100 (0=fatigué, 100=énergique)
 int niveauVigilance = 30;       // 0-100 (0=détendu, 100=hypervigilant)
 unsigned long dernierComportement = 0;
 bool interruptionActive = false;
+float positionBrasActuelle = 100.0;  // Position actuelle des bras (0-100%)
 
-// Noms des comportements (pour le débogage)
-const char* nomsComportements[NOMBRE_COMPORTEMENTS+1] = {
+// Variables pour la respiration LED
+unsigned long dernierBreathing = 0;
+const unsigned long intervalleBreathing = 3000; // Respiration toutes les 3 secondes
+
+// Noms des états émotionnels (pour le débogage)
+const char* nomsEtats[NOMBRE_ETATS_EMOTIONNELS+1] = {
   "NONE",
-  "Accueil",
-  "Recherche",
-  "Détection",
-  "Tir",
-  "Désactivation",
-  "Sommeil",
-  "Réveil",
-  "Curiosité",
-  "Peur",
-  "Colère",
-  "Joie",
-  "Tristesse",
-  "Surprise",
-  "Dégoût",
-  "Ennui",
-  "Fatigue",
-  "Excitation",
-  "Confusion",
-  "Méfiance",
-  "Satisfaction"
+  "NEUTRE",
+  "AMICAL", 
+  "VIGILANT",
+  "HOSTILE",
+  "LUDIQUE"
 };
 
 // Initialisation de l'objet NeoPixel
@@ -107,6 +97,12 @@ void loop() {
     // Exécuter le comportement émotionnel
     jouerComportementEmotionnel();
     dernierChangement = maintenant;
+  }
+  
+  // Effet de respiration LED entre les comportements
+  if (maintenant - dernierBreathing >= intervalleBreathing) {
+    breathingEffect();
+    dernierBreathing = maintenant;
   }
   
   // Petite pause pour éviter la surcharge du processeur

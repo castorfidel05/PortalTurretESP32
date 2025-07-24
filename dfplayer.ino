@@ -10,24 +10,44 @@ void initDFPlayer() {
   if (!myDFPlayer.begin(mySoftwareSerial)) {
     Serial.println("Erreur DFPlayer");
   }
-  myDFPlayer.volume(20);
+  myDFPlayer.volume(14);
 }
 
 void jouerSon(int index) {
-  myDFPlayer.play(index);
-  dernierSonJoue = index;
+  // Utiliser la fonction centralisée pour éviter la duplication de logique
+  extern int determinerEtatEmotionnel();
+  int etatEmotionnel = determinerEtatEmotionnel();
+  
+  uint32_t couleurEtat = getCouleurEtat();
+  
   Serial.print("Son joué: ");
   Serial.print(index);
-  Serial.print(" - Mode: ");
-  Serial.println(nomsComportements[modeCourant]);
+  Serial.print(" - État: ");
+  Serial.print(nomsEtats[etatEmotionnel]);
+  Serial.print(" (");
+  Serial.print(etatEmotionnel);
+  Serial.println(")");
   
-  // Attendre que le son soit terminé (environ 3 secondes pour la plupart des sons)
-  delay(3000);
+  // Jouer le son
+  myDFPlayer.play(index);
+  dernierSonJoue = index;
+  
+  // Démarrer l'effet LED vocal en parallèle
+  int dureeEstimee = 3000; // 3 secondes par défaut
+  
+  // Ajuster la durée selon le type de son
+  if (index >= 100) {
+    dureeEstimee = 5000; // Sons longs (musique, etc.)
+  } else if (index <= 10) {
+    dureeEstimee = 1500; // Sons courts (bips, alertes)
+  }
+  
+  // Lancer l'effet LED vocal
+  voiceLedEffect(couleurEtat, dureeEstimee, etatEmotionnel);
   
   // Vérifier si le DFPlayer est toujours en train de jouer
-  // et attendre un peu plus si nécessaire
   if (myDFPlayer.available()) {
-    delay(1000);
+    delay(500);
   }
 }
 
@@ -42,10 +62,18 @@ void jouerSonAvecEffet(int index, uint32_t couleurOeil, uint32_t couleurCanon,
   // Jouer le son
   myDFPlayer.play(index);
   dernierSonJoue = index;
+  
+  // Utiliser la fonction centralisée pour éviter la duplication de logique
+  extern int determinerEtatEmotionnel();
+  int etatEmotionnel = determinerEtatEmotionnel();
+  
   Serial.print("Son joué avec effet: ");
   Serial.print(index);
-  Serial.print(" - Mode: ");
-  Serial.println(nomsComportements[modeCourant]);
+  Serial.print(" - État: ");
+  Serial.print(nomsEtats[etatEmotionnel]);
+  Serial.print(" (");
+  Serial.print(etatEmotionnel);
+  Serial.println(")");
   
   // Appliquer les effets visuels synchronisés avec le son
   if (clignoteOeil) {

@@ -15,14 +15,14 @@
 
 // === Configuration Servo ===
 #define ANGLE_FERME 0
-#define ANGLE_OUVERT 130
+#define ANGLE_OUVERT 120
 
 // === Configuration DFPlayer ===
 // RX=16, TX=17 pour le DFPlayer
 
 // === Gestion du changement de comportement ===
 #define INTERVALLE_CHANGEMENT 10000 // 10 secondes
-#define NOMBRE_COMPORTEMENTS 20
+#define NOMBRE_ETATS_EMOTIONNELS 5
 
 // === Couleurs prédéfinies ===
 #define RED 0xFF0000
@@ -38,7 +38,7 @@
 #define OFF 0x000000
 #define BLANC_FROID 0xC8C8FF
 
-// === Noms des comportements ===
-extern const char* nomsComportements[NOMBRE_COMPORTEMENTS+1];
+// === Noms des états émotionnels ===
+extern const char* nomsEtats[NOMBRE_ETATS_EMOTIONNELS+1];
 
 #endif // CONFIG_H

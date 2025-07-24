@@ -73,28 +73,31 @@ void verifierInterruptions() {
 }
 
 // Déterminer l'état émotionnel basé sur l'humeur et les niveaux
+// Probabilités cibles : Hostile 15%, Vigilant 15%, Amical 20%, Ludique 25%, Neutre 25%
+// Valeurs initiales : humeur=50, énergie=80, vigilance=30
 int determinerEtatEmotionnel() {
-  // État hostile : humeur basse ET (vigilance haute OU énergie haute)
-  if (humeurActuelle < 30 && (niveauVigilance > 60 || niveauEnergie > 70)) {
-    return ETAT_HOSTILE;
-  }
-  
-  // État vigilant : vigilance haute OU (humeur moyenne-basse ET énergie moyenne)
-  if (niveauVigilance > 50 || (humeurActuelle < 50 && niveauEnergie > 40)) {
-    return ETAT_VIGILANT;
-  }
-  
-  // État amical : humeur haute ET énergie moyenne-haute
-  if (humeurActuelle > 70 && niveauEnergie > 50) {
-    return ETAT_AMICAL;
-  }
-  
-  // État ludique : humeur haute ET énergie très haute
-  if (humeurActuelle > 60 && niveauEnergie > 80) {
+  // État ludique : énergie élevée ET humeur positive (25%)
+  if (niveauEnergie > 70 && humeurActuelle > 55) {
     return ETAT_LUDIQUE;
   }
   
-  // État neutre par défaut
+  // État amical : humeur élevée ET énergie modérée (20%)
+  if (humeurActuelle > 60 && niveauEnergie > 50 && niveauEnergie <= 70) {
+    return ETAT_AMICAL;
+  }
+  
+  // État hostile : humeur basse ET (énergie élevée OU vigilance élevée) (15%)
+  if (humeurActuelle < 35 && (niveauEnergie > 75 || niveauVigilance > 60)) {
+    return ETAT_HOSTILE;
+  }
+  
+  // État vigilant : vigilance élevée OU (humeur moyenne ET énergie moyenne) (15%)
+  if (niveauVigilance > 45 || 
+      (humeurActuelle >= 40 && humeurActuelle <= 65 && niveauEnergie >= 40 && niveauEnergie <= 75)) {
+    return ETAT_VIGILANT;
+  }
+  
+  // État neutre : tous les autres cas (25%)
   return ETAT_NEUTRE;
 }
 
@@ -103,7 +106,7 @@ void transitionVersEtat(int nouvelEtat) {
   // Réinitialiser les LEDs
   leds.clear();
   leds.show();
-  brasServo.attach(SERVO_PIN);
+  // Le servo sera attaché automatiquement dans setServoPourcentage() quand nécessaire
   
   // Exécuter le comportement selon l'état
   switch (nouvelEtat) {
@@ -127,8 +130,20 @@ void transitionVersEtat(int nouvelEtat) {
       break;
   }
   
-  // TOUJOURS fermer les bras à la fin pour éviter de dépasser 130° au prochain comportement
-  setServoPourcentage(100.0, 60.0);
+  // Fermeture intelligente : ne fermer que si les bras ne sont pas déjà fermés
+  // Serial.print("[DEBUG] Fin de comportement - Position actuelle: ");
+  // Serial.print(positionBrasActuelle);
+  // Serial.print("% - État: ");
+  // Serial.println(nouvelEtat);
+  
+  if (positionBrasActuelle < 95.0) {  // Seuil de tolérance pour éviter les micro-ajustements
+    // Serial.print("Fermeture sécuritaire : position actuelle ");
+    // Serial.print(positionBrasActuelle);
+    // Serial.println("% -> 100%");
+    setServoPourcentage(100.0, 60.0);
+  } else {
+    // Serial.println("Bras déjà fermés, pas de fermeture redondante");
+  }
   delay(500);
   detachServo();
 }
@@ -287,7 +302,7 @@ void executerEtatHostile() {
 void executerEtatLudique() {
   Serial.println("État: LUDIQUE");
   
-  int variation = random(1, 4);
+  int variation = random(1, 5); // Ajout du pattern Rainbow Dance
   
   switch (variation) {
     case 1: // Arc-en-ciel ludique
@@ -323,9 +338,17 @@ void executerEtatLudique() {
         jouerSon(random(2) ? 23 : 27); // Ravie ou Sans rancune
       }
       break;
+      
+    case 4: // Rainbow Dance - Pattern joueur spectaculaire
+      rainbowDance(); // Bras + arc-en-ciel synchronisés
+      jouerSon(random(4) ? 15 : (random(3) ? 26 : (random(2) ? 23 : 200))); // Sons joyeux + easter egg
+      break;
   }
   
-  setServoPourcentage(100.0, random(40, 71));
+  // Note: rainbowDance() gère déjà la fermeture des bras
+  if (random(1, 5) != 4) { // Seulement si ce n'était pas Rainbow Dance
+    setServoPourcentage(100.0, random(40, 71));
+  }
 }
 
 // Réaction aux interruptions (détection simulée)

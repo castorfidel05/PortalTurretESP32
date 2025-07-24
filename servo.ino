@@ -19,13 +19,19 @@ void setServoPourcentage(float pourcentage, float vitesse) {
   int targetAngle = map(pourcentage, 0, 100, ANGLE_OUVERT, ANGLE_FERME);
   int stepDelay = map(vitesse, 1, 100, 30, 1); // plus vitesse haute, moins de delay
 
-  Serial.print("Déplacement vers ");
-  Serial.print(pourcentage);
-  Serial.print("% (");
-  Serial.print(targetAngle);
-  Serial.print("°) à ");
-  Serial.print(vitesse);
-  Serial.println("% de vitesse");
+  // Debug amélioré
+  // Serial.print("[SERVO] Position actuelle: ");
+  // Serial.print(positionBrasActuelle);
+  // Serial.print("% -> Nouvelle: ");
+  // Serial.print(pourcentage);
+  // Serial.print("% (");
+  if (pourcentage > positionBrasActuelle) {
+    // Serial.println("FERMETURE)");
+  } else if (pourcentage < positionBrasActuelle) {
+    // Serial.println("OUVERTURE)");
+  } else {
+    // Serial.println("AUCUN MOUVEMENT)");
+  }
 
   brasServo.attach(SERVO_PIN);
 
@@ -43,6 +49,12 @@ void setServoPourcentage(float pourcentage, float vitesse) {
   }
 
   currentPosition = targetAngle;
+  positionBrasActuelle = pourcentage;  // Mettre à jour la position trackée
+  
+  // Log de sortie
+  // Serial.print("[SERVO] Position finale: ");
+  // Serial.print(positionBrasActuelle);
+  // Serial.println("%");
 }
 
 void detachServo() {

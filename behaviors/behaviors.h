@@ -20,9 +20,10 @@ extern int niveauEnergie;         // 0-100 (0=fatigué, 100=énergique)
 extern int niveauVigilance;       // 0-100 (0=détendu, 100=hypervigilant)
 extern unsigned long dernierComportement;
 extern bool interruptionActive;
+extern float positionBrasActuelle;  // Position actuelle des bras (0-100%)
 extern unsigned long dernierChangement;
 extern int modeCourant;
-extern const char* nomsComportements[NOMBRE_COMPORTEMENTS+1];
+extern const char* nomsEtats[NOMBRE_ETATS_EMOTIONNELS+1];
 #endif
 
 // Déclaration anticipée pour éviter les dépendances circulaires
